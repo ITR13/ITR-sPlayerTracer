@@ -1,10 +1,5 @@
-﻿using System;
-using Il2CppSystem.Collections.Generic;
-using Il2CppSystem.Runtime.CompilerServices;
-using Il2CppSystem.Runtime.ExceptionServices;
-using Il2CppSystem.Text;
+﻿
 using MelonLoader;
-using Unity.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -218,7 +213,7 @@ namespace VrcTracer
 
             var sb = new StringBuilder();
             sb.Append(transform.GetChild(0).gameObject.name);
-            for(var i = 1; i<transform.childCount; i++)
+            for (var i = 1; i < transform.childCount; i++)
             {
                 sb.Append(", ");
                 sb.Append(transform.GetChild(i).gameObject.name);

@@ -55,7 +55,7 @@
     <Compile Include="ConfigWatcher.cs" />
     <Compile Include="TracerConfig.cs" />
     <Compile Include="TracerToUser.cs" />
-    <Compile Include="Loader.cs" />
+    <Compile Include="MainClass.cs" />
     <Compile Include="PlayerMarker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

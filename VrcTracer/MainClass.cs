@@ -9,7 +9,7 @@ using StringList = System.Collections.Generic.List<string>;
 
 namespace VrcTracer
 {
-    public class Loader : MelonMod
+    public class MainClass : MelonMod
     {
         private enum TracerMode
         {

@@ -35,7 +35,8 @@ namespace VrcTracer
 
                 tracer._lineRenderer.SetPosition(
                     0,
-                    tracer._transform.position + Vector3.up * 2
+                    tracer._transform.position + 
+                    ConfigWatcher.TracerConfig.destinationOffset
                 );
                 tracer._lineRenderer.SetPosition(1, PlayerMarker.Position);
             }

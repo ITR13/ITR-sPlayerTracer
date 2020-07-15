@@ -19,36 +19,58 @@ namespace VrcTracer
         }
 
         private TracerMode _tracerMode;
+        private bool _forceUpdate;
 
         public override void OnApplicationQuit()
         {
             ConfigWatcher.Unload();
         }
 
+        public override void OnLevelWasInitialized(int level)
+        {
+            _forceUpdate = true;
+        }
+
         public override void OnUpdate()
         {
-            ConfigWatcher.UpdateIfDirty();
+            var updated = ConfigWatcher.UpdateIfDirty() || _forceUpdate;
+            var shouldChangeMode = ShouldChangeMode();
+            _forceUpdate = false;
 
-            var trigger = ConfigWatcher.TracerConfig.trigger;
-            var hold = ConfigWatcher.TracerConfig.hold;
-            if (trigger == KeyCode.None) return;
-            if (hold != KeyCode.None && !Input.GetKey(hold)) return;
-            if (!Input.GetKeyDown(trigger)) return;
-
-            var deleteCount = TracerToUser.DestroyAllTracers();
-            if (deleteCount == 0)
+            if (updated || shouldChangeMode)
             {
-                _tracerMode = TracerMode.Off;
+                TracerToUser.DestroyAllTracers();
             }
 
+            if (shouldChangeMode)
+            {
+                ChangeMode();
+            }
+
+            if ((updated || shouldChangeMode) && _tracerMode != TracerMode.Off)
+            {
+                CreateTracers();
+            }
+        }
+
+        private bool ShouldChangeMode()
+        {
+            var trigger = ConfigWatcher.TracerConfig.trigger;
+            var hold = ConfigWatcher.TracerConfig.hold;
+            if (trigger == KeyCode.None) return false;
+            if (hold != KeyCode.None && !Input.GetKey(hold)) return false;
+
+            return Input.GetKeyDown(trigger);
+        }
+
+        private void ChangeMode()
+        {
             switch (_tracerMode)
             {
                 case TracerMode.Off:
-                    CreateTracers();
                     _tracerMode = TracerMode.Follow;
                     break;
                 case TracerMode.Follow:
-                    CreateTracers();
                     _tracerMode = TracerMode.Stick;
                     break;
                 default:
@@ -76,6 +98,7 @@ namespace VrcTracer
 
         private void CreateTracers()
         {
+            MelonModLogger.Log("Creating tracers");
             TracerToUser.TracerMaterial = new Material(Shader.Find("Legacy Shaders/Particles/Additive"));
             var log = new StringList();
             foreach (var avatarDescriptor in AllDescriptors())

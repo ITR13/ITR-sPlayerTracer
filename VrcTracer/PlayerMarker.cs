@@ -15,7 +15,8 @@ namespace VrcTracer
             {
                 _player = value;
                 _isSet = true;
-                Position = Player.transform.position + Vector3.up;
+                Position = Player.transform.position +
+                           ConfigWatcher.TracerConfig.originOffset;
             }
         }
 
@@ -29,7 +30,8 @@ namespace VrcTracer
 
             if (follow)
             {
-                Position = Player.transform.position + Vector3.up;
+                Position = Player.transform.position +
+                           ConfigWatcher.TracerConfig.originOffset;
             }
 
             return true;

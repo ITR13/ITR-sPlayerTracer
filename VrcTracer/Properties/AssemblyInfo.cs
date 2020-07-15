@@ -35,5 +35,5 @@ using VrcTracer;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly: MelonModInfo(typeof(MainClass), "ITR's Player Tracer", "1.0.0", "ITR")]
+[assembly: MelonModInfo(typeof(MainClass), "ITR's Player Tracer", "1.0.1", "ITR")]
 [assembly: MelonModGame("VRChat", "VRChat")]

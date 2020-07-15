@@ -1,4 +1,5 @@
 ﻿
+using System.Text;
 using MelonLoader;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,15 +20,20 @@ namespace VrcTracer
 
         private TracerMode _tracerMode;
 
+        public override void OnApplicationQuit()
+        {
+            ConfigWatcher.Unload();
+        }
+
         public override void OnUpdate()
         {
-            if (
-                !Input.GetKey(KeyCode.LeftControl) ||
-                !Input.GetKeyDown(KeyCode.T)
-            )
-            {
-                return;
-            }
+            ConfigWatcher.UpdateIfDirty();
+
+            var trigger = ConfigWatcher.TracerConfig.trigger;
+            var hold = ConfigWatcher.TracerConfig.hold;
+            if (trigger == KeyCode.None) return;
+            if (hold != KeyCode.None && !Input.GetKey(hold)) return;
+            if (!Input.GetKeyDown(trigger)) return;
 
             var deleteCount = TracerToUser.DestroyAllTracers();
             if (deleteCount == 0)
@@ -105,14 +111,14 @@ namespace VrcTracer
             var parent = gameObject.transform.parent;
             if (parent == null)
             {
-                logs.Add($"W: Parent of {gameObject.name} is null!");
+                logs.Add($"E: Parent of {gameObject.name} is null!");
                 return;
             }
 
             var grandParent = parent.parent;
             if (grandParent == null)
             {
-                logs.Add($"W: Grandparent of {gameObject.name} and parent of {grandParent.gameObject.name} is null!");
+                logs.Add($"E: Grandparent of {gameObject.name} and parent of {grandParent.gameObject.name} is null!");
                 return;
             }
             var playerObjectName = grandParent.gameObject.name;

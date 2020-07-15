@@ -37,6 +37,7 @@
     <Reference Include="MelonLoader.ModHandler">
       <HintPath>%STEAMROOT%\steamapps\common\VRChat\MelonLoader\MelonLoader.ModHandler.dll</HintPath>
     </Reference>
+    <Reference Include="System" />
     <Reference Include="UnhollowerBaseLib">
       <HintPath>%STEAMROOT%\steamapps\common\VRChat\MelonLoader\Managed\UnhollowerBaseLib.dll</HintPath>
     </Reference>
@@ -51,6 +52,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigWatcher.cs" />
+    <Compile Include="TracerConfig.cs" />
     <Compile Include="TracerToUser.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="PlayerMarker.cs" />

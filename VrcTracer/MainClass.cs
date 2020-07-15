@@ -130,7 +130,7 @@ namespace VrcTracer
                 return;
             }
 
-            var color = Color.red;
+            var color = (Color)ConfigWatcher.TracerConfig.blockedColor;
             if (gameObject.name != "avatar_invisible(Clone)")
             {
                 logs.Add($"Found remote user: {username}");
@@ -153,28 +153,28 @@ namespace VrcTracer
             if (profileCanvas == null)
             {
                 logs.Add($"W: User had no profile canvas: {ChildNames(user)}");
-                return Color.red;
+                return ConfigWatcher.TracerConfig.errorColor;
             }
 
             var framesPanel = profileCanvas.FindChild("Frames");
             if (framesPanel == null)
             {
                 logs.Add($"W: User had no frames panel: {ChildNames(profileCanvas)}");
-                return Color.red;
+                return ConfigWatcher.TracerConfig.errorColor;
             }
 
             var nameplatePanel = framesPanel.FindChild("Panel - NamePlate");
             if (nameplatePanel == null)
             {
                 logs.Add($"W: User had no nameplate panel: {ChildNames(framesPanel)}");
-                return Color.red;
+                return ConfigWatcher.TracerConfig.errorColor;
             }
 
             var image = nameplatePanel.GetComponent<Image>();
             if (image == null)
             {
                 logs.Add($"W: User frames panel had no image: {ChildNames(nameplatePanel)}");
-                return Color.red;
+                return ConfigWatcher.TracerConfig.errorColor;
             }
 
             return image.color;

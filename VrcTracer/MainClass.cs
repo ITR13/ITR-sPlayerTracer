@@ -1,6 +1,7 @@
-﻿
+﻿using System.ComponentModel.Design;
 using System.Text;
 using MelonLoader;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -26,7 +27,7 @@ namespace VrcTracer
             ConfigWatcher.Unload();
         }
 
-        public override void OnLevelWasInitialized(int level)
+        public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
             _forceUpdate = true;
         }
@@ -73,11 +74,11 @@ namespace VrcTracer
                 case TracerMode.Follow:
                     _tracerMode = TracerMode.Stick;
                     break;
+                case TracerMode.Stick:
                 default:
                     _tracerMode = TracerMode.Off;
                     break;
             }
-            MelonModLogger.Log($"TracerMode is now {_tracerMode}");
         }
 
         public override void OnLateUpdate()
@@ -93,12 +94,13 @@ namespace VrcTracer
                 default:
                     return;
             }
+
             TracerToUser.LateUpdate();
         }
 
         private void CreateTracers()
         {
-            MelonModLogger.Log("Creating tracers");
+            MelonLogger.Msg("Creating tracers");
             TracerToUser.TracerMaterial = new Material(Shader.Find("Legacy Shaders/Particles/Additive"));
             var log = new StringList();
             foreach (var avatarDescriptor in AllDescriptors())
@@ -109,7 +111,7 @@ namespace VrcTracer
             if (log.Count > 0)
             {
                 log.Insert(0, "Tracer creation log");
-                MelonModLogger.Log(string.Join("\n", log));
+                MelonLogger.Msg(string.Join("\n", log.ToArray()));
             }
         }
 
@@ -144,6 +146,7 @@ namespace VrcTracer
                 logs.Add($"E: Grandparent of {gameObject.name} and parent of {grandParent.gameObject.name} is null!");
                 return;
             }
+
             var playerObjectName = grandParent.gameObject.name;
             var username = GetName(grandParent, logs);
             if (playerObjectName.StartsWith("VRCPlayer[Local]"))
@@ -153,7 +156,7 @@ namespace VrcTracer
                 return;
             }
 
-            var color = (Color)ConfigWatcher.TracerConfig.blockedColor;
+            var color = (Color) ConfigWatcher.TracerConfig.blockedColor;
             if (gameObject.name != "avatar_invisible(Clone)")
             {
                 logs.Add($"Found remote user: {username}");
@@ -167,69 +170,51 @@ namespace VrcTracer
             var child = new GameObject($"Tracer #{TracerToUser.Count}");
             child.transform.parent = gameObject.transform;
             child.transform.localPosition = Vector3.zero;
-            var tracerToUser = new TracerToUser(child) { Color = color };
+            var tracerToUser = new TracerToUser(child) {Color = color};
         }
 
         private Color GetColor(Transform user, StringList logs)
         {
-            var profileCanvas = user.FindChild("Canvas - Profile (1)");
-            if (profileCanvas == null)
+            var holder = GetChild(user, logs, "Player Nameplate", "Canvas", "Nameplate", "Contents", "Quick Stats", "Trust Text");
+            if (holder == null) return ConfigWatcher.TracerConfig.errorColor;
+
+            var text = holder.GetComponent<TextMeshProUGUI>();
+            if (text == null)
             {
-                logs.Add($"W: User had no profile canvas: {ChildNames(user)}");
+                logs.Add($"W: Found Trust Text, but found not TextMeshProUGUI component");
                 return ConfigWatcher.TracerConfig.errorColor;
             }
 
-            var framesPanel = profileCanvas.FindChild("Frames");
-            if (framesPanel == null)
+            return text.color;
+        }
+
+        private Transform GetChild(Transform root, StringList logs, params string[] childNames)
+        {
+            var current = root;
+            var path = root.name;
+            foreach (var childName in childNames)
             {
-                logs.Add($"W: User had no frames panel: {ChildNames(profileCanvas)}");
-                return ConfigWatcher.TracerConfig.errorColor;
+                path += $"/{childName}";
+                var prev = current;
+                current = current.FindChild(childName);
+
+                if (current != null) continue;
+                logs.Add($"W: User had no '{path}': {ChildNames(prev)}");
+                return null;
             }
 
-            var nameplatePanel = framesPanel.FindChild("Panel - NamePlate");
-            if (nameplatePanel == null)
-            {
-                logs.Add($"W: User had no nameplate panel: {ChildNames(framesPanel)}");
-                return ConfigWatcher.TracerConfig.errorColor;
-            }
-
-            var image = nameplatePanel.GetComponent<Image>();
-            if (image == null)
-            {
-                logs.Add($"W: User frames panel had no image: {ChildNames(nameplatePanel)}");
-                return ConfigWatcher.TracerConfig.errorColor;
-            }
-
-            return image.color;
+            return current;
         }
 
         private string GetName(Transform user, StringList logs)
         {
-            var profileCanvas = user.FindChild("Canvas - Profile (1)");
-            if (profileCanvas == null)
-            {
-                logs.Add($"W: User had no profile canvas: {ChildNames(user)}");
-                return "{null}";
-            }
+            var holder = GetChild(user, logs, "Player Nameplate", "Canvas", "Nameplate", "Contents", "Main", "Text Container", "Name");
+            if (holder == null) return "{null}";
 
-            var tetPanel = profileCanvas.FindChild("Text");
-            if (tetPanel == null)
-            {
-                logs.Add($"W: User had no text panel: {ChildNames(profileCanvas)}");
-                return "{null}";
-            }
-
-            var nameplatePanel = tetPanel.FindChild("Text - NameTag");
-            if (nameplatePanel == null)
-            {
-                logs.Add($"W: User had no nameplate panel: {ChildNames(tetPanel)}");
-                return "{null}";
-            }
-
-            var text = nameplatePanel.GetComponent<Text>();
+            var text = holder.GetComponent<TextMeshProUGUI>();
             if (text == null)
             {
-                logs.Add($"W: User frames panel had no image: {ChildNames(nameplatePanel)}");
+                logs.Add($"W: Found object with text, but found not TextMeshProUGUI component");
                 return "{null}";
             }
 

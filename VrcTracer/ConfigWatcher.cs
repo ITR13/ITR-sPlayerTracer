@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using MelonLoader;
 using MelonLoader.TinyJSON;
@@ -53,7 +51,7 @@ namespace VrcTracer
 
             if (!File.Exists(FullPath))
             {
-                MelonModLogger.Log(
+                MelonLogger.Msg(
                     $"Creating default config file at \"{FullPath}\""
                 );
 
@@ -64,7 +62,7 @@ namespace VrcTracer
                 File.WriteAllText(FullPath, json);
             }
 
-            MelonModLogger.Log("Updating Tracer configs");
+            MelonLogger.Msg("Updating Tracer configs");
 
             TracerConfig = null;
 
@@ -75,8 +73,8 @@ namespace VrcTracer
             }
             catch (Exception e)
             {
-                MelonModLogger.LogError(e.ToString());
-                MelonModLogger.Log(
+                MelonLogger.Error(e.ToString());
+                MelonLogger.Msg(
                     "Something went wrong when deserializing json. Check the ReadMe in case something has changed"
                 );
             }

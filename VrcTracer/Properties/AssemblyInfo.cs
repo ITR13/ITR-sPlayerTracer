@@ -24,7 +24,7 @@ using VrcTracer;
 [assembly: Guid("195218d8-1d48-4e32-91b6-14d10dd32010")]
 
 // Version information for an assembly consists of the following four values:
-//
+//<
 //      Major Version
 //      Minor Version
 //      Build Number
@@ -35,5 +35,5 @@ using VrcTracer;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly: MelonModInfo(typeof(MainClass), "ITR's Player Tracer", "1.0.1", "ITR")]
-[assembly: MelonModGame("VRChat", "VRChat")]
+[assembly: MelonInfo(typeof(MainClass), "ITR's Player Tracer", "1.0.1", "ITR")]
+[assembly: MelonGame("VRChat", "VRChat")]

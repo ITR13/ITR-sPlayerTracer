@@ -6,11 +6,78 @@ using MelonLoader;
 using UnityEngine;
 
 using VRC.Core;
+
+using System;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
+
+using MelonLoader;
+
+using UnhollowerBaseLib;
+
+using UnhollowerRuntimeLib.XrefScans;
+
+using UnityEngine;
 namespace VrcTracer
 {
-    // Stolen from https://github.com/Psychloor/PlayerRotater/blob/0b30e04cf85fdab769f6e0afc020e6d9bc9900ac/PlayerRotater/Utilities.cs#L76
+    // Mostly stolen from https://github.com/Psychloor/PlayerRotater/blob/0b30e04cf85fdab769f6e0afc020e6d9bc9900ac/PlayerRotater/Utilities.cs#L76
     class WorldCheck
     {
+
+        #region ModPatch
+        // Also stolen from player rotator
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate void FadeTo(IntPtr instancePtr, IntPtr fadeNamePtr, float fade, IntPtr actionPtr, IntPtr stackPtr);
+
+        private static FadeTo origFadeTo;
+        private static void FadeToPatch(IntPtr instancePtr, IntPtr fadeNamePtr, float fade, IntPtr actionPtr, IntPtr stackPtr)
+        {
+            if (instancePtr == IntPtr.Zero) return;
+            origFadeTo(instancePtr, fadeNamePtr, fade, actionPtr, stackPtr);
+
+            if (!IL2CPP.Il2CppStringToManaged(fadeNamePtr).Equals("BlackFade", StringComparison.Ordinal)
+                || !fade.Equals(0f)
+                || RoomManager.field_Internal_Static_ApiWorldInstance_0 == null) return;
+
+            MainClass.OnWorldJoined();
+        }
+
+        internal static bool PatchMethods()
+        {
+            try
+            {
+                // Faded to and joined and initialized room
+                MethodInfo fadeMethod = typeof(VRCUiManager).GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).First(
+                    m => m.Name.StartsWith("Method_Public_Void_String_Single_Action_")
+                         && m.Name.IndexOf("PDM", StringComparison.OrdinalIgnoreCase) == -1
+                         && m.GetParameters().Length == 3);
+                origFadeTo = Patch<FadeTo>(fadeMethod, GetDetour(nameof(FadeToPatch)));
+            }
+            catch (Exception e)
+            {
+                MelonLogger.Error("Failed to patch FadeTo\n" + e.Message);
+                return false;
+            }
+
+            return true;
+        }
+
+        private static unsafe TDelegate Patch<TDelegate>(MethodBase originalMethod, IntPtr patchDetour)
+        {
+            IntPtr original = *(IntPtr*)UnhollowerSupport.MethodBaseToIl2CppMethodInfoPointer(originalMethod);
+            MelonUtils.NativeHookAttach((IntPtr)(&original), patchDetour);
+            return Marshal.GetDelegateForFunctionPointer<TDelegate>(original);
+        }
+
+        private static IntPtr GetDetour(string name)
+        {
+            return typeof(WorldCheck).GetMethod(name, BindingFlags.NonPublic | BindingFlags.Static).MethodHandle.GetFunctionPointer();
+        }
+
+        #endregion
+
         private static bool alreadyCheckingWorld;
         private static Dictionary<string, bool> checkedWorlds = new Dictionary<string, bool>();
 
@@ -25,10 +92,11 @@ namespace VrcTracer
             alreadyCheckingWorld = true;
 
             string worldId = RoomManager.field_Internal_Static_ApiWorld_0.id;
+            MelonLogger.Msg("World Id: "+worldId);
 
             if (checkedWorlds.ContainsKey(worldId))
             {
-                MainClass.ForceDisable = checkedWorlds[worldId];
+                MainClass.NotForceDisable = checkedWorlds[worldId];
                 yield break;
             }
 
@@ -44,13 +112,13 @@ namespace VrcTracer
                 switch (result)
                 {
                     case "allowed":
-                        MainClass.ForceDisable = true;
+                        MainClass.NotForceDisable = true;
                         checkedWorlds.Add(worldId, true);
                         alreadyCheckingWorld = false;
                         yield break;
 
                     case "denied":
-                        MainClass.ForceDisable = false;
+                        MainClass.NotForceDisable = false;
                         checkedWorlds.Add(worldId, false);
                         alreadyCheckingWorld = false;
                         yield break;
@@ -70,12 +138,12 @@ namespace VrcTracer
                                 if (worldTag.IndexOf("game", StringComparison.OrdinalIgnoreCase) != -1
                                     || worldTag.IndexOf("club", StringComparison.OrdinalIgnoreCase) != -1)
                                 {
-                                    MainClass.ForceDisable = false;
+                                    MainClass.NotForceDisable = false;
                                     checkedWorlds.Add(worldId, false);
                                     alreadyCheckingWorld = false;
                                     return;
                                 }
-                            MainClass.ForceDisable = true;
+                            MainClass.NotForceDisable = true;
                             checkedWorlds.Add(worldId, true);
                             alreadyCheckingWorld = false;
                         }

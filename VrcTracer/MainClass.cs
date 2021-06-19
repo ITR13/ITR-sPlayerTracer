@@ -18,23 +18,29 @@ namespace VrcTracer
         }
 
         private TracerMode _tracerMode;
-        private bool _forceUpdate;
-        public static bool ForceDisable;
+        private static bool _forceUpdate;
+        public static bool NotForceDisable;
+
+        public override void OnApplicationStart()
+        {
+            WorldCheck.PatchMethods();
+        }
 
         public override void OnApplicationQuit()
         {
             ConfigWatcher.Unload();
         }
 
-        public override void OnSceneWasLoaded(int buildIndex, string sceneName)
+        public static void OnWorldJoined()
         {
             _forceUpdate = true;
             MelonCoroutines.Start(WorldCheck.CheckWorld());
-            MelonLogger.Msg($"Scene #{buildIndex} '{sceneName}' was loaded");
         }
 
         public override void OnUpdate()
         {
+            if (!NotForceDisable) return;
+
             var updated = ConfigWatcher.UpdateIfDirty() || _forceUpdate;
             var shouldChangeMode = ShouldChangeMode();
             _forceUpdate = false;
@@ -67,12 +73,6 @@ namespace VrcTracer
 
         private void ChangeMode()
         {
-            if (ForceDisable)
-            {
-                _tracerMode = TracerMode.Off;
-                return;
-            }
-
             switch (_tracerMode)
             {
                 case TracerMode.Off:

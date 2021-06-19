@@ -1,10 +1,8 @@
-﻿using System.ComponentModel.Design;
-using System.Text;
+﻿using System.Text;
 using MelonLoader;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 using VRC.SDKBase;
 using StringList = System.Collections.Generic.List<string>;
 
@@ -21,6 +19,7 @@ namespace VrcTracer
 
         private TracerMode _tracerMode;
         private bool _forceUpdate;
+        public static bool ForceDisable;
 
         public override void OnApplicationQuit()
         {
@@ -30,6 +29,8 @@ namespace VrcTracer
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
             _forceUpdate = true;
+            MelonCoroutines.Start(WorldCheck.CheckWorld());
+            MelonLogger.Msg($"Scene #{buildIndex} '{sceneName}' was loaded");
         }
 
         public override void OnUpdate()
@@ -66,6 +67,12 @@ namespace VrcTracer
 
         private void ChangeMode()
         {
+            if (ForceDisable)
+            {
+                _tracerMode = TracerMode.Off;
+                return;
+            }
+
             switch (_tracerMode)
             {
                 case TracerMode.Off:

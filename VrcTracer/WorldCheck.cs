@@ -6,19 +6,11 @@ using MelonLoader;
 using UnityEngine;
 
 using VRC.Core;
-
-using System;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-
-using MelonLoader;
-
 using UnhollowerBaseLib;
 
-using UnhollowerRuntimeLib.XrefScans;
-
-using UnityEngine;
 namespace VrcTracer
 {
     // Mostly stolen from https://github.com/Psychloor/PlayerRotater/blob/0b30e04cf85fdab769f6e0afc020e6d9bc9900ac/PlayerRotater/Utilities.cs#L76

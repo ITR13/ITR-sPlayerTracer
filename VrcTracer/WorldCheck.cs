@@ -89,9 +89,7 @@ namespace VrcTracer
                 yield break;
             }
 
-            alreadyCheckingWorld = true;
-
-            string worldId = RoomManager.field_Internal_Static_ApiWorld_0.id;
+            var worldId = RoomManager.field_Internal_Static_ApiWorld_0.id;
             MelonLogger.Msg("World Id: "+worldId);
 
             if (checkedWorlds.ContainsKey(worldId))
@@ -99,6 +97,8 @@ namespace VrcTracer
                 MainClass.NotForceDisable = checkedWorlds[worldId];
                 yield break;
             }
+
+            alreadyCheckingWorld = true;
 
             // Check if black/whitelisted from EmmVRC - thanks Emilia and the rest of EmmVRC Staff
             var www = new WWW($"https://dl.emmvrc.com/riskyfuncs.php?worldid={worldId}", null, new Dictionary<string, string>());

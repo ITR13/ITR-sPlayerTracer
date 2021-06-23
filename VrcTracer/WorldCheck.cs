@@ -90,11 +90,11 @@ namespace VrcTracer
             }
 
             var worldId = RoomManager.field_Internal_Static_ApiWorld_0.id;
-            MelonLogger.Msg("World Id: "+worldId);
 
             if (checkedWorlds.ContainsKey(worldId))
             {
                 MainClass.NotForceDisable = checkedWorlds[worldId];
+                MelonLogger.Msg($"Using cached check {checkedWorlds[worldId]} for world '{worldId}'");
                 yield break;
             }
 
@@ -115,12 +115,14 @@ namespace VrcTracer
                         MainClass.NotForceDisable = true;
                         checkedWorlds.Add(worldId, true);
                         alreadyCheckingWorld = false;
+                        MelonLogger.Msg($"EmmVRC allows world '{worldId}'");
                         yield break;
 
                     case "denied":
                         MainClass.NotForceDisable = false;
                         checkedWorlds.Add(worldId, false);
                         alreadyCheckingWorld = false;
+                        MelonLogger.Msg($"EmmVRC denies world '{worldId}'");
                         yield break;
                 }
 
@@ -141,11 +143,13 @@ namespace VrcTracer
                                     MainClass.NotForceDisable = false;
                                     checkedWorlds.Add(worldId, false);
                                     alreadyCheckingWorld = false;
+                                    MelonLogger.Msg($"Found game or club tag in world world '{worldId}'");
                                     return;
                                 }
                             MainClass.NotForceDisable = true;
                             checkedWorlds.Add(worldId, true);
                             alreadyCheckingWorld = false;
+                            MelonLogger.Msg($"Found no game or club tag in world world '{worldId}'");
                         }
                         else
                         {

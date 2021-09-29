@@ -23,18 +23,12 @@ namespace VrcTracer
 
         public override void OnApplicationStart()
         {
-            WorldCheck.PatchMethods();
+            WorldCheck.Init();
         }
 
         public override void OnApplicationQuit()
         {
             ConfigWatcher.Unload();
-        }
-
-        public static void OnWorldJoined()
-        {
-            _forceUpdate = true;
-            MelonCoroutines.Start(WorldCheck.CheckWorld());
         }
 
         public override void OnUpdate()

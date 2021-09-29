@@ -11,6 +11,9 @@ namespace VrcTracer
 
         public SerializedVector3 originOffset = new SerializedVector3(0, 1, 0);
         public SerializedVector3 destinationOffset = new SerializedVector3(0, 2, 0);
+
+        public bool PrintFoundUsers = false;
+        public int Verbosity = 1;
     }
 
     [System.Serializable]

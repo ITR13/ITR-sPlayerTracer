@@ -1,10 +1,12 @@
 ﻿using System.Text;
+using Il2CppSystem;
 using MelonLoader;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using VRC.SDKBase;
 using StringList = System.Collections.Generic.List<string>;
+using Action = System.Action;
 
 namespace VrcTracer
 {
@@ -21,9 +23,22 @@ namespace VrcTracer
         private static bool _forceUpdate;
         public static bool NotForceDisable;
 
+        public static Action DisableTracers { get; private set; }
+        public static Action EnableTracers { get; private set; }
+        public static Action LockTracers { get; private set; }
+
         public override void OnApplicationStart()
         {
+            DisableTracers = () =>
+            {
+                MelonLogger.Msg("Turned off tracers");
+                ForceSetMode(TracerMode.Off);
+            };
+            EnableTracers = () => ForceSetMode(TracerMode.Follow);
+            LockTracers = () => ForceSetMode(TracerMode.Stick);
+
             WorldCheck.Init();
+            UIExpansionKitHelper.Init();
         }
 
         public override void OnApplicationQuit()
@@ -80,6 +95,15 @@ namespace VrcTracer
                     _tracerMode = TracerMode.Off;
                     break;
             }
+        }
+
+        private void ForceSetMode(TracerMode tracerMode)
+        {
+            if (!NotForceDisable) return;
+
+            TracerToUser.DestroyAllTracers();
+            _tracerMode = tracerMode;
+            if (_tracerMode != TracerMode.Off) CreateTracers();
         }
 
         public override void OnLateUpdate()

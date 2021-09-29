@@ -62,7 +62,7 @@ namespace VrcTracer
                 File.WriteAllText(FullPath, json);
             }
 
-            MelonLogger.Msg("Updating Tracer configs");
+            if (TracerConfig.verbosity > 2) MelonLogger.Msg("Updating Tracer configs");
 
             TracerConfig = null;
 

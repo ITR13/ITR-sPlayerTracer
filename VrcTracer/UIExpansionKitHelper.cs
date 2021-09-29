@@ -11,12 +11,17 @@ namespace VrcTracer
         {
             if (!HasUiExpansionKit())
             {
-                MelonLogger.Msg("Found no Ui Expansion Kit");
-                MelonLogger.Msg("Found mods:\n" + string.Join("\n", MelonHandler.Mods.Select(mod => mod.Info.Name)));
+                if (ConfigWatcher.TracerConfig.verbosity >= 1) MelonLogger.Msg("Found no Ui Expansion Kit");
+                if (ConfigWatcher.TracerConfig.verbosity >= 3)
+                {
+                    MelonLogger.Msg(
+                        "Found mods:\n" + string.Join("\n", MelonHandler.Mods.Select(mod => mod.Info.Name))
+                    );
+                }
                 return;
             }
 
-            MelonLogger.Msg("Adding UiExpansion buttons");
+            if (ConfigWatcher.TracerConfig.verbosity >= 1) MelonLogger.Msg("Adding UiExpansion buttons");
             AddButtons();
         }
 

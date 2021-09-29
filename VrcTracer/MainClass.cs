@@ -25,7 +25,7 @@ namespace VrcTracer
         {
             DisableTracers = () =>
             {
-                MelonLogger.Msg("Turned off tracers");
+                if(ConfigWatcher.TracerConfig.verbosity >= 2) MelonLogger.Msg("Turned off tracers");
                 ForceSetMode(TracerMode.Off);
             };
             EnableTracers = () => ForceSetMode(TracerMode.Follow);
@@ -110,12 +110,12 @@ namespace VrcTracer
 
         private void CreateTracers()
         {
-            MelonLogger.Msg("Creating tracers");
+            if (ConfigWatcher.TracerConfig.verbosity >= 2) MelonLogger.Msg("Creating tracers");
             TracerToUser.TracerMaterial = new Material(Shader.Find("Legacy Shaders/Particles/Additive"));
             var log = new StringList();
             foreach (var avatarDescriptor in AllDescriptors()) AddTracer(avatarDescriptor.gameObject, log);
 
-            if (log.Count > 0)
+            if (log.Count > 0 && ConfigWatcher.TracerConfig.verbosity >= 3)
             {
                 log.Insert(0, "Tracer creation log");
                 MelonLogger.Msg(string.Join("\n", log.ToArray()));

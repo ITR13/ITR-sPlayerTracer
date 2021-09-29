@@ -13,8 +13,7 @@ namespace VrcTracer
 
         public SerializedVector3 originOffset = new SerializedVector3(0, 1, 0);
 
-        public bool PrintFoundUsers;
-        public int Verbosity = 1;
+        public int verbosity = 2;
     }
 
     [Serializable]

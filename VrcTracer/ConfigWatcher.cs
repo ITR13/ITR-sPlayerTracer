@@ -5,7 +5,7 @@ using MelonLoader.TinyJSON;
 
 namespace VrcTracer
 {
-    static class ConfigWatcher
+    public static class ConfigWatcher
     {
         private const string FileName = "TracerConfig.json";
 
@@ -22,13 +22,13 @@ namespace VrcTracer
         public static TracerConfig TracerConfig = new TracerConfig();
 
         private static readonly FileSystemWatcher FileSystemWatcher;
-        private static bool _dirty = false;
+        private static bool _dirty;
 
         static ConfigWatcher()
         {
             FileSystemWatcher = new FileSystemWatcher(FileDirectory, FileName)
             {
-                NotifyFilter = (NotifyFilters)((1 << 9) - 1),
+                NotifyFilter = (NotifyFilters) ((1 << 9) - 1),
                 EnableRaisingEvents = true
             };
             FileSystemWatcher.Changed += (_, __) => _dirty = true;

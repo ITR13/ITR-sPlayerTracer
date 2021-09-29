@@ -1,27 +1,30 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace VrcTracer
 {
-    [System.Serializable]
+    [Serializable]
     public class TracerConfig
     {
-        public KeyCode hold = KeyCode.LeftControl, trigger = KeyCode.T;
         public SerializedColor blockedColor = new SerializedColor(1, 0, 0, 1);
+        public SerializedVector3 destinationOffset = new SerializedVector3(0, 2, 0);
         public SerializedColor errorColor = new SerializedColor(1, 0, 0, 1);
+        public KeyCode hold = KeyCode.LeftControl, trigger = KeyCode.T;
 
         public SerializedVector3 originOffset = new SerializedVector3(0, 1, 0);
-        public SerializedVector3 destinationOffset = new SerializedVector3(0, 2, 0);
 
-        public bool PrintFoundUsers = false;
+        public bool PrintFoundUsers;
         public int Verbosity = 1;
     }
 
-    [System.Serializable]
+    [Serializable]
     public class SerializedColor
     {
         public float red, green, blue, alpha;
 
-        public SerializedColor() { }
+        public SerializedColor()
+        {
+        }
 
         public SerializedColor(float red, float green, float blue, float alpha)
         {
@@ -37,12 +40,14 @@ namespace VrcTracer
         }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class SerializedVector3
     {
         public float x, y, z;
 
-        public SerializedVector3() { }
+        public SerializedVector3()
+        {
+        }
 
         public SerializedVector3(float x, float y, float z)
         {

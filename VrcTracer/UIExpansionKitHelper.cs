@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using MelonLoader;
 using UIExpansionKit.API;
 
@@ -15,7 +11,7 @@ namespace VrcTracer
         {
             if (!HasUiExpansionKit())
             {
-                MelonLogger.Msg($"Found no Ui Expansion Kit");
+                MelonLogger.Msg("Found no Ui Expansion Kit");
                 MelonLogger.Msg("Found mods:\n" + string.Join("\n", MelonHandler.Mods.Select(mod => mod.Info.Name)));
                 return;
             }
@@ -24,8 +20,10 @@ namespace VrcTracer
             AddButtons();
         }
 
-        private static bool HasUiExpansionKit() => 
-            MelonHandler.Mods.Any(mod => mod.Info.Name == "UI Expansion Kit");
+        private static bool HasUiExpansionKit()
+        {
+            return MelonHandler.Mods.Any(mod => mod.Info.Name == "UI Expansion Kit");
+        }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void AddButtons()

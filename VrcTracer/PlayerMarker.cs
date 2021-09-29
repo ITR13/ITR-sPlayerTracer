@@ -2,11 +2,11 @@
 
 namespace VrcTracer
 {
-    static class PlayerMarker
+    internal static class PlayerMarker
     {
-        public static Vector3 Position { get; private set; }
         private static GameObject _player;
         private static bool _isSet;
+        public static Vector3 Position { get; private set; }
 
         public static GameObject Player
         {
@@ -29,10 +29,8 @@ namespace VrcTracer
             }
 
             if (follow)
-            {
                 Position = Player.transform.position +
                            ConfigWatcher.TracerConfig.originOffset;
-            }
 
             return true;
         }

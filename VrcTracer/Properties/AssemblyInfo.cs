@@ -38,4 +38,4 @@ using VrcTracer;
 [assembly: MelonInfo(typeof(MainClass), "ITR's Player Tracer", "1.0.4", "ITR")]
 [assembly: MelonGame("VRChat", "VRChat")]
 [assembly: MelonAdditionalDependencies("VRChatUtilityKit")]
-[assembly: MelonOptionalDependencies("UIExpansionKit")] 
+[assembly: MelonOptionalDependencies("UIExpansionKit")]

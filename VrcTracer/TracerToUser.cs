@@ -3,59 +3,14 @@ using UnityEngine;
 
 namespace VrcTracer
 {
-    class TracerToUser
+    internal class TracerToUser
     {
-        private static readonly List<TracerToUser> Tracers 
+        private static readonly List<TracerToUser> Tracers
             = new List<TracerToUser>();
-        
-        public static int Count => Tracers.Count;
 
-        public static int DestroyAllTracers()
-        {
-            var count = Tracers.Count;
-            foreach (var tracer in Tracers)
-            {
-                Object.Destroy(tracer._gameObject);
-            }
-            Tracers.Clear();
-
-            return count;
-        }
-
-        public static void LateUpdate()
-        {
-            for(var i = Tracers.Count - 1; i>=0; i--)
-            {
-                var tracer = Tracers[i];
-                if (tracer._gameObject == null)
-                {
-                    Tracers.RemoveAt(i);
-                    continue;
-                }
-
-                tracer._lineRenderer.SetPosition(
-                    0,
-                    tracer._transform.position + 
-                    ConfigWatcher.TracerConfig.destinationOffset
-                );
-                tracer._lineRenderer.SetPosition(1, PlayerMarker.Position);
-            }
-        }
-
-        public Color Color
-        {
-            get => _lineRenderer.startColor;
-            set
-            {
-                _lineRenderer.startColor = value;
-                _lineRenderer.endColor = value;
-            }
-        }
-
-        public static Material TracerMaterial { get; set; }
+        private readonly GameObject _gameObject;
 
         private readonly LineRenderer _lineRenderer;
-        private readonly GameObject _gameObject;
         private readonly Transform _transform;
 
         public TracerToUser(GameObject gameObject)
@@ -74,6 +29,49 @@ namespace VrcTracer
             var position = _transform.position;
             _lineRenderer.SetPosition(0, position);
             _lineRenderer.SetPosition(1, position + Vector3.up * 2);
+        }
+
+        public static int Count => Tracers.Count;
+
+        public Color Color
+        {
+            get => _lineRenderer.startColor;
+            set
+            {
+                _lineRenderer.startColor = value;
+                _lineRenderer.endColor = value;
+            }
+        }
+
+        public static Material TracerMaterial { get; set; }
+
+        public static int DestroyAllTracers()
+        {
+            var count = Tracers.Count;
+            foreach (var tracer in Tracers) Object.Destroy(tracer._gameObject);
+            Tracers.Clear();
+
+            return count;
+        }
+
+        public static void LateUpdate()
+        {
+            for (var i = Tracers.Count - 1; i >= 0; i--)
+            {
+                var tracer = Tracers[i];
+                if (tracer._gameObject == null)
+                {
+                    Tracers.RemoveAt(i);
+                    continue;
+                }
+
+                tracer._lineRenderer.SetPosition(
+                    0,
+                    tracer._transform.position +
+                    ConfigWatcher.TracerConfig.destinationOffset
+                );
+                tracer._lineRenderer.SetPosition(1, PlayerMarker.Position);
+            }
         }
     }
 }

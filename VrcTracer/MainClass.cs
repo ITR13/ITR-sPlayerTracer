@@ -1,27 +1,21 @@
-﻿using System.Text;
-using Il2CppSystem;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using MelonLoader;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using VRC.SDKBase;
 using StringList = System.Collections.Generic.List<string>;
-using Action = System.Action;
 
 namespace VrcTracer
 {
     public class MainClass : MelonMod
     {
-        private enum TracerMode
-        {
-            Off = 0,
-            Follow = 1,
-            Stick = 2,
-        }
-
-        private TracerMode _tracerMode;
         private static bool _forceUpdate;
         public static bool NotForceDisable;
+
+        private TracerMode _tracerMode;
 
         public static Action DisableTracers { get; private set; }
         public static Action EnableTracers { get; private set; }
@@ -54,20 +48,11 @@ namespace VrcTracer
             var shouldChangeMode = ShouldChangeMode();
             _forceUpdate = false;
 
-            if (updated || shouldChangeMode)
-            {
-                TracerToUser.DestroyAllTracers();
-            }
+            if (updated || shouldChangeMode) TracerToUser.DestroyAllTracers();
 
-            if (shouldChangeMode)
-            {
-                ChangeMode();
-            }
+            if (shouldChangeMode) ChangeMode();
 
-            if ((updated || shouldChangeMode) && _tracerMode != TracerMode.Off)
-            {
-                CreateTracers();
-            }
+            if ((updated || shouldChangeMode) && _tracerMode != TracerMode.Off) CreateTracers();
         }
 
         private bool ShouldChangeMode()
@@ -128,10 +113,7 @@ namespace VrcTracer
             MelonLogger.Msg("Creating tracers");
             TracerToUser.TracerMaterial = new Material(Shader.Find("Legacy Shaders/Particles/Additive"));
             var log = new StringList();
-            foreach (var avatarDescriptor in AllDescriptors())
-            {
-                AddTracer(avatarDescriptor.gameObject, log);
-            }
+            foreach (var avatarDescriptor in AllDescriptors()) AddTracer(avatarDescriptor.gameObject, log);
 
             if (log.Count > 0)
             {
@@ -140,7 +122,7 @@ namespace VrcTracer
             }
         }
 
-        private System.Collections.Generic.IEnumerable<VRC_AvatarDescriptor> AllDescriptors()
+        private IEnumerable<VRC_AvatarDescriptor> AllDescriptors()
         {
             for (var i = 0; i < SceneManager.sceneCount; i++)
             {
@@ -148,10 +130,7 @@ namespace VrcTracer
                 foreach (var rootObject in scene.GetRootGameObjects())
                 {
                     var ad = rootObject.GetComponentsInChildren<VRC_AvatarDescriptor>(true);
-                    foreach (var avatarDescriptor in ad)
-                    {
-                        yield return avatarDescriptor;
-                    }
+                    foreach (var avatarDescriptor in ad) yield return avatarDescriptor;
                 }
             }
         }
@@ -200,13 +179,22 @@ namespace VrcTracer
 
         private Color GetColor(Transform user, StringList logs)
         {
-            var holder = GetChild(user, logs, "Player Nameplate", "Canvas", "Nameplate", "Contents", "Quick Stats", "Trust Text");
+            var holder = GetChild(
+                user,
+                logs,
+                "Player Nameplate",
+                "Canvas",
+                "Nameplate",
+                "Contents",
+                "Quick Stats",
+                "Trust Text"
+            );
             if (holder == null) return ConfigWatcher.TracerConfig.errorColor;
 
             var text = holder.GetComponent<TextMeshProUGUI>();
             if (text == null)
             {
-                logs.Add($"W: Found Trust Text, but found not TextMeshProUGUI component");
+                logs.Add("W: Found Trust Text, but found not TextMeshProUGUI component");
                 return ConfigWatcher.TracerConfig.errorColor;
             }
 
@@ -233,13 +221,23 @@ namespace VrcTracer
 
         private string GetName(Transform user, StringList logs)
         {
-            var holder = GetChild(user, logs, "Player Nameplate", "Canvas", "Nameplate", "Contents", "Main", "Text Container", "Name");
+            var holder = GetChild(
+                user,
+                logs,
+                "Player Nameplate",
+                "Canvas",
+                "Nameplate",
+                "Contents",
+                "Main",
+                "Text Container",
+                "Name"
+            );
             if (holder == null) return "{null}";
 
             var text = holder.GetComponent<TextMeshProUGUI>();
             if (text == null)
             {
-                logs.Add($"W: Found object with text, but found not TextMeshProUGUI component");
+                logs.Add("W: Found object with text, but found not TextMeshProUGUI component");
                 return "{null}";
             }
 
@@ -259,6 +257,13 @@ namespace VrcTracer
             }
 
             return sb.ToString();
+        }
+
+        private enum TracerMode
+        {
+            Off = 0,
+            Follow = 1,
+            Stick = 2
         }
     }
 }

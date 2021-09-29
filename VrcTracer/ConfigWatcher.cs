@@ -2,12 +2,14 @@
 using System.IO;
 using MelonLoader;
 using MelonLoader.TinyJSON;
+using Tomlet;
 
 namespace VrcTracer
 {
     public static class ConfigWatcher
     {
-        private const string FileName = "TracerConfig.json";
+        private const string FileName = "TracerConfig.toml";
+        private const string OldFileName = "TracerConfig.json";
 
         private static readonly string FileDirectory = Path.Combine(
             Environment.CurrentDirectory,
@@ -19,6 +21,11 @@ namespace VrcTracer
             FileName
         );
 
+        private static readonly string OldFullPath = Path.Combine(
+            FileDirectory,
+            OldFileName
+        );
+
         public static TracerConfig TracerConfig = new TracerConfig();
 
         private static readonly FileSystemWatcher FileSystemWatcher;
@@ -26,9 +33,11 @@ namespace VrcTracer
 
         static ConfigWatcher()
         {
+            TransferOldConfig();
+
             FileSystemWatcher = new FileSystemWatcher(FileDirectory, FileName)
             {
-                NotifyFilter = (NotifyFilters) ((1 << 9) - 1),
+                NotifyFilter = (NotifyFilters)((1 << 9) - 1),
                 EnableRaisingEvents = true
             };
             FileSystemWatcher.Changed += (_, __) => _dirty = true;
@@ -43,6 +52,55 @@ namespace VrcTracer
             FileSystemWatcher.EnableRaisingEvents = false;
             _dirty = false;
         }
+
+        private static void TransferOldConfig()
+        {
+            if (!File.Exists(OldFullPath)) return;
+
+            var movedOldFullPath = OldFullPath + ".old";
+
+            if (File.Exists(movedOldFullPath))
+            {
+                File.Delete(movedOldFullPath);
+            }
+
+
+            File.Move(OldFullPath, movedOldFullPath);
+
+            MelonLogger.Msg($"Found json config at \"{OldFullPath}\", converting to toml config");
+
+            try
+            {
+                var json = File.ReadAllText(movedOldFullPath);
+                JSON.MakeInto(JSON.Load(json), out TracerConfig);
+            }
+            catch (Exception e)
+            {
+                MelonLogger.Error(e.ToString());
+                MelonLogger.Msg(
+                    "Something went wrong when deserializing json. Check the ReadMe in case something has changed"
+                );
+                return;
+            }
+
+            try
+            {
+                MelonLogger.Msg(
+                    $"Creating toml file based on old json file at \"{FullPath}\""
+                );
+
+                var toml = TomletMain.TomlStringFrom(TracerConfig);
+                File.WriteAllText(FullPath, toml);
+            }
+            catch (Exception e)
+            {
+                MelonLogger.Error(e.ToString());
+                MelonLogger.Msg(
+                    "Something went wrong when serializing toml"
+                );
+            }
+        }
+
 
         public static bool UpdateIfDirty()
         {
@@ -68,14 +126,14 @@ namespace VrcTracer
 
             try
             {
-                var json = File.ReadAllText(FullPath);
-                JSON.MakeInto(JSON.Load(json), out TracerConfig);
+                var toml = File.ReadAllText(FullPath);
+                TracerConfig = TomletMain.To<TracerConfig>(toml);
             }
             catch (Exception e)
             {
                 MelonLogger.Error(e.ToString());
                 MelonLogger.Msg(
-                    "Something went wrong when deserializing json. Check the ReadMe in case something has changed"
+                    "Something went wrong when deserializing toml. Check the ReadMe in case something has changed"
                 );
             }
 

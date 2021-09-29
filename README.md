@@ -22,7 +22,6 @@ There is a config in \[GameRoot\]/UserData/TracerConfig.json:
 **errorColor**: What color to use if nameplate color cannot be determined  
 
 **verbosity**: How much stuff is written to the console, min 0, max 3
-**disableUi**: If true the mod won't add quick-menu buttons, even if UiExpansionKit is installed
 
 All colors are defined as RGBA between 0 and 1
 To get a list of keys, check [KeyCode](https://docs.unity3d.com/ScriptReference/KeyCode.html)s (scroll down to Properties for a list of all)

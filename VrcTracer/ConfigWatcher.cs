@@ -113,11 +113,8 @@ namespace VrcTracer
                     $"Creating default config file at \"{FullPath}\""
                 );
 
-                var json = JSON.Dump(
-                    new TracerConfig(),
-                    EncodeOptions.PrettyPrint | EncodeOptions.NoTypeHints
-                );
-                File.WriteAllText(FullPath, json);
+                var toml = TomletMain.TomlStringFrom(new TracerConfig());
+                File.WriteAllText(FullPath, toml);
             }
 
             if (TracerConfig.verbosity > 2) MelonLogger.Msg("Updating Tracer configs");

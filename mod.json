@@ -12,7 +12,7 @@
 	"(Optional) [UiExpansionKit](https://github.com/knah/VRCMods/releases)",
   ],
   "searchtags": ["Tracer", "Find", "Friend", "Tracers", "Friends", "Utility", "Line", "ITR"],
-  "downloadlink": "https://github.com/ITR13/ITR-sPlayerTracer/releases/download/1.1.0/VrcTracer.dll",
+  "downloadlink": "https://github.com/ITR13/ITR-sPlayerTracer/releases/download/1.1.1/VrcTracer.dll",
   "sourcelink": "https://github.com/ITR13/ITR-sPlayerTracer",
   "changelog": "Works on latest vrchat version.\nEasier to use in VR (UiExpansions).\nAdded verbosity to config.\nNow uses TOML instead of JSON",
   "embedcolor": "007F00",

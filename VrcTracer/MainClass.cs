@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using VRC.SDKBase;
+using VRChatUtilityKit.Utilities;
 using StringList = System.Collections.Generic.List<string>;
 
 namespace VrcTracer
@@ -41,8 +42,9 @@ namespace VrcTracer
             EnableTracers = () => ForceSetMode(TracerMode.Follow);
             LockTracers = () => ForceSetMode(TracerMode.Stick);
 
+
+            VRCUtils.OnUiManagerInit += VrChatUtilityKitHelper.Init;
             WorldCheck.Init();
-            VrChatUtilityKitHelper.Init();
         }
 
         public override void OnApplicationQuit()

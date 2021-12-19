@@ -12,6 +12,10 @@ namespace VrcTracer
 {
     public class MainClass : MelonMod
     {
+        public static Action<string> Msg { get; private set; }
+        public static Action<string> Warning { get; private set; }
+        public static Action<string> Error { get; private set; }
+
         private static bool _forceUpdate;
         public static bool NotForceDisable;
 
@@ -23,9 +27,13 @@ namespace VrcTracer
 
         public override void OnApplicationStart()
         {
+            Msg = LoggerInstance.Msg;
+            Warning = LoggerInstance.Warning;
+            Error = LoggerInstance.Error;
+
             DisableTracers = () =>
             {
-                if(ConfigWatcher.TracerConfig.verbosity >= 2) MelonLogger.Msg("Turned off tracers");
+                if(ConfigWatcher.TracerConfig.verbosity >= 2) MainClass.Msg("Turned off tracers");
                 ForceSetMode(TracerMode.Off);
             };
             EnableTracers = () => ForceSetMode(TracerMode.Follow);
@@ -110,7 +118,7 @@ namespace VrcTracer
 
         private void CreateTracers()
         {
-            if (ConfigWatcher.TracerConfig.verbosity >= 2) MelonLogger.Msg("Creating tracers");
+            if (ConfigWatcher.TracerConfig.verbosity >= 2) MainClass.Msg("Creating tracers");
             TracerToUser.TracerMaterial = new Material(Shader.Find("Legacy Shaders/Particles/Additive"));
             var log = new StringList();
             foreach (var avatarDescriptor in AllDescriptors()) AddTracer(avatarDescriptor.gameObject, log);
@@ -118,7 +126,7 @@ namespace VrcTracer
             if (log.Count > 0 && ConfigWatcher.TracerConfig.verbosity >= 3)
             {
                 log.Insert(0, "Tracer creation log");
-                MelonLogger.Msg(string.Join("\n", log.ToArray()));
+                MainClass.Msg(string.Join("\n", log.ToArray()));
             }
         }
 

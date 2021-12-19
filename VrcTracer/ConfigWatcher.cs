@@ -67,7 +67,7 @@ namespace VrcTracer
 
             File.Move(OldFullPath, movedOldFullPath);
 
-            MelonLogger.Msg($"Found json config at \"{OldFullPath}\", converting to toml config");
+            MainClass.Msg($"Found json config at \"{OldFullPath}\", converting to toml config");
 
             try
             {
@@ -76,8 +76,8 @@ namespace VrcTracer
             }
             catch (Exception e)
             {
-                MelonLogger.Error(e.ToString());
-                MelonLogger.Msg(
+                MainClass.Error(e.ToString());
+                MainClass.Msg(
                     "Something went wrong when deserializing json. Check the ReadMe in case something has changed"
                 );
                 return;
@@ -85,7 +85,7 @@ namespace VrcTracer
 
             try
             {
-                MelonLogger.Msg(
+                MainClass.Msg(
                     $"Creating toml file based on old json file at \"{FullPath}\""
                 );
 
@@ -94,8 +94,8 @@ namespace VrcTracer
             }
             catch (Exception e)
             {
-                MelonLogger.Error(e.ToString());
-                MelonLogger.Msg(
+                MainClass.Error(e.ToString());
+                MainClass.Msg(
                     "Something went wrong when serializing toml"
                 );
             }
@@ -109,7 +109,7 @@ namespace VrcTracer
 
             if (!File.Exists(FullPath))
             {
-                MelonLogger.Msg(
+                MainClass.Msg(
                     $"Creating default config file at \"{FullPath}\""
                 );
 
@@ -117,7 +117,7 @@ namespace VrcTracer
                 File.WriteAllText(FullPath, toml);
             }
 
-            if (TracerConfig.verbosity > 2) MelonLogger.Msg("Updating Tracer configs");
+            if (TracerConfig.verbosity > 2) MainClass.Msg("Updating Tracer configs");
 
             TracerConfig = null;
 
@@ -128,8 +128,8 @@ namespace VrcTracer
             }
             catch (Exception e)
             {
-                MelonLogger.Error(e.ToString());
-                MelonLogger.Msg(
+                MainClass.Error(e.ToString());
+                MainClass.Msg(
                     "Something went wrong when deserializing toml. Check the ReadMe in case something has changed"
                 );
             }

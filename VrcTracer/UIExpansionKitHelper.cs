@@ -22,7 +22,14 @@ namespace VrcTracer
             }
 
             if (ConfigWatcher.TracerConfig.verbosity >= 1) MainClass.Msg("Adding UiExpansion buttons");
-            AddButtons();
+            try
+            {
+                AddButtons();
+            }
+            catch (Exception e)
+            {
+                MainClass.Error(e.ToString());
+            }
         }
 
         private static bool HasUiExpansionKit()

@@ -13,6 +13,7 @@ namespace VrcTracer
 
         public SerializedVector3 originOffset = new SerializedVector3(0, 1, 0);
 
+        public bool hideMenuTab = false;
         public int verbosity = 2;
     }
 

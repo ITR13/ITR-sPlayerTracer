@@ -27,6 +27,7 @@ namespace VrcTracer
         public static Action LockTracers { get; private set; }
 
         public static event Action<TracerMode> TracerModeChanged;
+        public static event Action ConfigUpdated;
 
         public override void OnApplicationStart()
         {
@@ -65,6 +66,8 @@ namespace VrcTracer
             if (shouldChangeMode) ChangeMode();
 
             if ((updated || shouldChangeMode) && _tracerMode != TracerMode.Off) CreateTracers();
+
+            if (updated) ConfigUpdated?.Invoke();
         }
 
         private bool ShouldChangeMode()

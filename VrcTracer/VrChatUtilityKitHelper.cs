@@ -171,6 +171,9 @@ namespace VrcTracer
                     }
                 )
             );
+
+            tabButton.gameObject.SetActive(!ConfigWatcher.TracerConfig.hideMenuTab);
+            MainClass.ConfigUpdated += () => tabButton.gameObject.SetActive(!ConfigWatcher.TracerConfig.hideMenuTab);
         }
 
 

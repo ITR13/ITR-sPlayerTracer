@@ -1,19 +1,18 @@
 {
   "_id": 76,
   "name": "ITR's Player Tracer",
-  "modversion": "1.1.1",
-  "vrchatversion": "Build 1133",
-  "loaderversion": "0.4.3",
+  "modversion": "1.1.2",
+  "vrchatversion": "Build 1160",
+  "loaderversion": "0.5.2",
   "modtype": "Mod",
   "author": "ITR",
   "description": "Adds nameplate colored lines between you and every other player in the world (ctrl+t).\nFor more info read the [README](https://github.com/ITR13/ITR-sPlayerTracer/blob/master/README.md)",
   "requirements": [
 	"[VRChatUtilityKit](https://github.com/loukylor/VRC-Mods/releases)",
-	"(Optional) [UiExpansionKit](https://github.com/knah/VRCMods/releases)",
   ],
   "searchtags": ["Tracer", "Find", "Friend", "Tracers", "Friends", "Utility", "Line", "ITR"],
   "downloadlink": "https://github.com/ITR13/ITR-sPlayerTracer/releases/download/1.1.1/VrcTracer.dll",
   "sourcelink": "https://github.com/ITR13/ITR-sPlayerTracer",
-  "changelog": "Works on latest vrchat version.\nEasier to use in VR (UiExpansions).\nAdded verbosity to config.\nNow uses TOML instead of JSON",
+  "changelog": "Swapped Ui to purely use VRChatUtilityKit\nAdded option to remove the new ui tab",
   "embedcolor": "007F00",
 }

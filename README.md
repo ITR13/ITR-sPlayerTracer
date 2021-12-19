@@ -7,8 +7,7 @@ Press left ctrl+T to swap between 3 different modes, Off, Follow, and Stick. Whe
 In Follow mode, your end of the line will follow you as you move around.  
 In Stick mode, your end of the line will stay where you activated it.
 
-If you have UiExpansionKit you also get buttons in the quick-menu
-
+You can also use the Tracer Tab at the bottom of the menu to toggle tracers without 
 
 If a person changes avatar or joins the world, you need to reapply the mod to have a line between you and that player.
 
@@ -21,6 +20,7 @@ There is a config in \[GameRoot\]/UserData/TracerConfig.json:
 **blockedColor**: What lines pointing to a blocked person should be colored  
 **errorColor**: What color to use if nameplate color cannot be determined  
 
+**hideMenuTab**: Set this to true if you only want to use the keybinds
 **verbosity**: How much stuff is written to the console, min 0, max 3
 
 All colors are defined as RGBA between 0 and 1

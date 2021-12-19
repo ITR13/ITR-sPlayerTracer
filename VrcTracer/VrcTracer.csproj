@@ -41,7 +41,7 @@
     <Compile Include="MainClass.cs" />
     <Compile Include="PlayerMarker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UIExpansionKitHelper.cs" />
+    <Compile Include="VrChatUtilityKitHelper.cs" />
     <Compile Include="WorldCheck.cs" />
   </ItemGroup>
   <ItemGroup>

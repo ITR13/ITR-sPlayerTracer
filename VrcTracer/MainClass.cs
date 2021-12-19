@@ -42,7 +42,7 @@ namespace VrcTracer
             LockTracers = () => ForceSetMode(TracerMode.Stick);
 
             WorldCheck.Init();
-            UIExpansionKitHelper.Init();
+            VrChatUtilityKitHelper.Init();
         }
 
         public override void OnApplicationQuit()

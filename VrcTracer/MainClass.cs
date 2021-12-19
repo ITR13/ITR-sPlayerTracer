@@ -25,6 +25,8 @@ namespace VrcTracer
         public static Action EnableTracers { get; private set; }
         public static Action LockTracers { get; private set; }
 
+        public static event Action<TracerMode> TracerModeChanged;
+
         public override void OnApplicationStart()
         {
             Msg = LoggerInstance.Msg;
@@ -88,6 +90,8 @@ namespace VrcTracer
                     _tracerMode = TracerMode.Off;
                     break;
             }
+
+            TracerModeChanged?.Invoke(_tracerMode);
         }
 
         private void ForceSetMode(TracerMode tracerMode)
@@ -96,6 +100,8 @@ namespace VrcTracer
 
             TracerToUser.DestroyAllTracers();
             _tracerMode = tracerMode;
+            TracerModeChanged?.Invoke(_tracerMode);
+
             if (_tracerMode != TracerMode.Off) CreateTracers();
         }
 
@@ -267,7 +273,7 @@ namespace VrcTracer
             return sb.ToString();
         }
 
-        private enum TracerMode
+        public enum TracerMode
         {
             Off = 0,
             Follow = 1,

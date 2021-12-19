@@ -1,13 +1,15 @@
 ﻿using System;
 using System.IO;
-using MelonLoader;
 using MelonLoader.TinyJSON;
 using Tomlet;
+using UnityEngine;
 
 namespace VrcTracer
 {
     public static class ConfigWatcher
     {
+        private const string ReadMeUrl = "https://github.com/ITR13/ITR-sPlayerTracer/blob/master/README.md";
+
         private const string FileName = "TracerConfig.toml";
         private const string OldFileName = "TracerConfig.json";
 
@@ -137,6 +139,21 @@ namespace VrcTracer
             TracerConfig = TracerConfig ?? new TracerConfig();
 
             return true;
+        }
+
+        public static void OpenConfig()
+        {
+            System.Diagnostics.Process.Start(FullPath);
+        }
+
+        public static void OpenConfigFolder()
+        {
+            System.Diagnostics.Process.Start("explorer.exe", "/select," + FullPath);
+        }
+
+        public static void OpenReadMe()
+        {
+            Application.OpenURL(ReadMeUrl);
         }
     }
 }
